@@ -13,26 +13,23 @@ declare(strict_types=1);
 namespace Hyperf\Synchronized\Store;
 
 
+use Hyperf\Redis\RedisProxy;
+use Hyperf\Synchronized\Contract\StoreInterface;
 use Hyperf\Synchronized\Exception\InvalidTtlException;
-use Redis;
 
 class RedisStore implements StoreInterface
 {
 
-    /** @var Redis */
+    /** @var RedisProxy */
     private $redis;
+
     private $ttl;
 
-    /**
-     * RedisStore constructor.
-     * @param $redis
-     * @param  float  $ttl
-     */
-    public function __construct($redis, float $ttl = 300.0)
+
+    public function __construct($redis, int $ttl = 300)
     {
 
         if ($ttl <= 0) {
-
             throw new InvalidTtlException('invalid lock ttl !');
         }
         $this->redis = $redis;
@@ -44,7 +41,7 @@ class RedisStore implements StoreInterface
         $status = $this->redis->set(
             $key,
             1,
-            ['NX', 'EX' => (int) $this->ttl]);
+            ['NX', 'EX' => $this->ttl]);
 
         return (bool) $status;
     }

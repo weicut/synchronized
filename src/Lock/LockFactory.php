@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Hyperf\Synchronized\Lock;
 
 
-use Hyperf\Synchronized\Store\StoreInterface;
+use Hyperf\Synchronized\Contract\StoreInterface;
 
 class LockFactory
 {

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Hyperf\Synchronized\Lock;
 
 
-class ProcessLock
+class Spinlock
 {
 
     public static $store = [];

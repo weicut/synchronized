@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Hyperf\Synchronized\Lock;
 
 
-use Hyperf\Synchronized\LockMode;
-use Hyperf\Synchronized\Store\StoreInterface;
+use Hyperf\Synchronized\Contract\LockInterface;
+use Hyperf\Synchronized\Contract\StoreInterface;
 
 class Lock implements LockInterface
 {
@@ -39,14 +39,14 @@ class Lock implements LockInterface
         try {
             while (!$this->store->create($this->key)) {
 
-                if ($blocking != LockMode::BLOCK) {
+                if (!$blocking) {
                     return false;
                 }
 
                 usleep((100 + random_int(-10, 10)) * 1000);
             }
         } finally {
-            ProcessLock::release($this->key);
+            Spinlock::release($this->key);
         }
 
         return true;
@@ -55,7 +55,7 @@ class Lock implements LockInterface
 
     public function processLockAcquire(bool $blocking): bool
     {
-        if (!ProcessLock::acquire($blocking, $this->key)) {
+        if (!Spinlock::acquire($blocking, $this->key)) {
             return false;
         }
 

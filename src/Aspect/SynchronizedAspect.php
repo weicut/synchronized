@@ -24,7 +24,6 @@ use Hyperf\Synchronized\LockKey;
 use Hyperf\Synchronized\LockMode;
 use Hyperf\Synchronized\Store\RedisStore;
 use Hyperf\Utils\ApplicationContext;
-use Throwable;
 
 /**
  * @Aspect
@@ -40,27 +39,25 @@ class SynchronizedAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
 
-        /** @var Synchronized $synchronized */
-        $synchronized = $proceedingJoinPoint->getAnnotationMetadata()->method[Synchronized::class];
+        /** @var Synchronized $annotation */
+        $annotation = $proceedingJoinPoint->getAnnotationMetadata()->method[Synchronized::class];
 
-        $redis   = ApplicationContext::getContainer()->get(RedisFactory::class)->get('default');
-        $lockKey = $this->generateKey($proceedingJoinPoint, $synchronized);
+        $redis   = ApplicationContext::getContainer()->get(RedisFactory::class)->get($annotation->mutexPool);
+        $lockKey = $this->generateKey($proceedingJoinPoint, $annotation);
 
-        $store = new RedisStore($redis, (int) $synchronized->secondsTimeout);
+        $store = new RedisStore($redis, $annotation->secondsTimeout);
 
         $lock = LockFactory::createFromStoreAndKey($store, $lockKey);
 
 
-        if (!$lock->acquire($synchronized->mode == LockMode::BLOCK)) {
+        if (!$lock->acquire($annotation->mode === LockMode::BLOCK)) {
             throw new AcquireException('acquire lock failed !');
         }
 
 
         try {
             return $proceedingJoinPoint->process();
-        } catch (Throwable $throwable) {
-            throw $throwable;
-        } finally {
+        }finally {
             $lock->release();
         }
     }

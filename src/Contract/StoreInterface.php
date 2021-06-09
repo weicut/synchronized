@@ -10,16 +10,17 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Hyperf\Synchronized\Lock;
+namespace Hyperf\Synchronized\Contract;
 
 
-interface LockInterface
+interface StoreInterface
 {
 
+    public function create(string $key): bool;
 
-    public function acquire(bool $blocking = false): bool;
+    public function exists(string $key): bool;
 
+    public function remove(string $key): bool;
 
-    public function release(): bool;
-
+    public function getTtl(): int;
 }
