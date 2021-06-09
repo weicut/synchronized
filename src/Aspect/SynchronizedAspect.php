@@ -16,6 +16,7 @@ namespace Hyperf\Synchronized\Aspect;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Di\Exception\Exception;
 use Hyperf\Redis\RedisFactory;
 use Hyperf\Synchronized\Annotation\Synchronized;
 use Hyperf\Synchronized\Exception\AcquireException;
@@ -51,13 +52,15 @@ class SynchronizedAspect extends AbstractAspect
 
 
         if (!$lock->acquire($annotation->mode === LockMode::BLOCK)) {
-            throw new AcquireException('acquire lock failed !');
+            throw new AcquireException('acquire lock failed.');
         }
 
 
         try {
             return $proceedingJoinPoint->process();
-        }finally {
+        } catch (\Throwable $e) {
+            throw $e;
+        } finally {
             $lock->release();
         }
     }

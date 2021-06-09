@@ -30,7 +30,7 @@ class RedisStore implements StoreInterface
     {
 
         if ($ttl <= 0) {
-            throw new InvalidTtlException('invalid lock ttl !');
+            throw new \InvalidArgumentException('invalid parameter of ttl.');
         }
         $this->redis = $redis;
         $this->ttl   = $ttl;

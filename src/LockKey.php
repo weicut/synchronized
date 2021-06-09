@@ -17,5 +17,5 @@ namespace Hyperf\Synchronized;
 
 class LockKey
 {
-    public const PREFIX = 'framework'.DIRECTORY_SEPARATOR.'synchronized:';
+    public const PREFIX = 'framework:synchronized:';
 }

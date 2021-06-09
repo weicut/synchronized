@@ -1,6 +1,6 @@
 # Synchronized
 
-Synchronized 是一个基于 redis 网络并锁，通过注解实现一键注入
+Synchronized 是一个基于 redis 网络并发锁，通过注解实现一键注入
 
 ## 安装
 
