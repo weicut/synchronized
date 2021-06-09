@@ -96,7 +96,7 @@ class ExceptionService
     }
 
     /**
-     * @Synchronized(mode=LockMode::EXCEPTION, secondsTimeout=3)
+     * @Synchronized(mode=LockMode::EXCEPTION)
      */
     public function handler(): void
     {
