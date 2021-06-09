@@ -26,17 +26,17 @@ class Synchronized extends AbstractAnnotation
     /**
      * @var int
      */
-    public $mode = LockMode::BLOCK; //锁模式，1：阻塞，2：报错， 默认为阻塞
+    public $mode = LockMode::BLOCK;
 
     /**
      * @var int
      */
-    public $secondsTimeout = 3; //锁的超时时间（仅阻塞模式下有效），单位：秒，默认为3秒，超过会自动解除，执行下一个
+    public $secondsTimeout = 3;
 
     /**
      * @var boolean
      */
-    public $withParam = true; //是否携带方法参数的锁，默认 true, 若为false， 则仅基于方法
+    public $withParam = true;
 
 
     public function __construct($value = null)
