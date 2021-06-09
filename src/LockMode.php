@@ -18,5 +18,5 @@ final class LockMode
 
     public const BLOCK = 1; //阻塞模式
 
-    public const THROW = 2; //抛异常
+    public const EXCEPTION = 2; //抛异常
 }
