@@ -29,7 +29,7 @@ class BlockLockTest extends TestCase
 
         $endTime = microtime(true);
 
-        self::assertGreaterThan($endTime - $startTime, 5);
+        self::assertGreaterThanOrEqual(5, (int)($endTime - $startTime));
     }
 
     /**
