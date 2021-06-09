@@ -41,7 +41,7 @@ class Synchronized extends AbstractAnnotation
     /**
      * @var string
      */
-    public $mutexPool = 'default';
+    public $lockPool = 'default';
 
 
     public function __construct($value = null)
@@ -50,7 +50,7 @@ class Synchronized extends AbstractAnnotation
         $this->mode           = (int) $this->mode;
         $this->secondsTimeout = (int) $this->secondsTimeout;
         $this->withParam      = (boolean) $this->withParam;
-        $this->mutexPool      = (string) $this->mutexPool;
+        $this->lockPool      = (string) $this->lockPool;
     }
 
 }

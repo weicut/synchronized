@@ -13,10 +13,10 @@ declare(strict_types=1);
 namespace Hyperf\Synchronized\Aspect;
 
 
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Di\Exception\Exception;
 use Hyperf\Redis\RedisFactory;
 use Hyperf\Synchronized\Annotation\Synchronized;
 use Hyperf\Synchronized\Exception\AcquireException;
@@ -36,6 +36,15 @@ class SynchronizedAspect extends AbstractAspect
         Synchronized::class,
     ];
 
+    /**
+     * @var StdoutLoggerInterface
+     */
+    private $logger;
+
+    public function __construct(StdoutLoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
@@ -43,7 +52,7 @@ class SynchronizedAspect extends AbstractAspect
         /** @var Synchronized $annotation */
         $annotation = $proceedingJoinPoint->getAnnotationMetadata()->method[Synchronized::class];
 
-        $redis   = ApplicationContext::getContainer()->get(RedisFactory::class)->get($annotation->mutexPool);
+        $redis   = ApplicationContext::getContainer()->get(RedisFactory::class)->get($annotation->lockPool);
         $lockKey = $this->generateKey($proceedingJoinPoint, $annotation);
 
         $store = new RedisStore($redis, $annotation->secondsTimeout);
@@ -55,6 +64,7 @@ class SynchronizedAspect extends AbstractAspect
             throw new AcquireException('acquire lock failed.');
         }
 
+        $this->logger->debug('acquire lock: '.$lockKey);
 
         try {
             return $proceedingJoinPoint->process();
@@ -62,6 +72,7 @@ class SynchronizedAspect extends AbstractAspect
             throw $e;
         } finally {
             $lock->release();
+            $this->logger->debug('release lock: '.$lockKey);
         }
     }
 
