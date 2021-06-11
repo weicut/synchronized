@@ -1,6 +1,6 @@
 # Synchronized
 
-[hyperf/synchronized](https://github.com/hyperf/synchronized)  提供了基于 `redis` `consul`  实现的高效互斥锁注解，底层通过增加 `自旋锁` 特性解决轮询带来的大量网络消耗，目前仅支持 `METHOD` 注解，后续还会补充 `etcd` `redlock` 等等相关锁
+[hyperf/synchronized](https://github.com/hyperf/synchronized)  提供了基于 `redis`、`consul`  实现的高效互斥锁注解，底层通过增加 `自旋锁` 特性解决轮询带来的大量网络消耗，目前仅支持 `METHOD` 注解，后续还会补充 `etcd`、`redlock` 等等相关锁
 
 ## 安装
 
