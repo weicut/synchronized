@@ -23,6 +23,7 @@ return [
         'store' => \Hyperf\Synchronized\Store\ConsulStore::class,
         'options' => [
             'uri' => 'http://127.0.0.1:8500',
+            'token' => ''
         ],
     ],
 

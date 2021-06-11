@@ -1,6 +1,6 @@
 # Synchronized
 
-[hyperf/synchronized](https://github.com/hyperf/synchronized)  提供了基于 `redis` 实现的高效互斥锁注解，底层通过增加`自旋锁` 特性解决 `redis` 轮询带来的大量网络消耗，目前仅支持 `METHOD` 注解
+[hyperf/synchronized](https://github.com/hyperf/synchronized)  提供了基于 `redis` `consul`  实现的高效互斥锁注解，底层通过增加 `自旋锁` 特性解决轮询带来的大量网络消耗，目前仅支持 `METHOD` 注解，后续还会补充 `etcd` `redlock` 等等相关锁
 
 ## 安装
 
@@ -8,13 +8,39 @@
 composer require hyperf/synchronized
 ```
 
+## 默认配置
+
+通过 `php bin/hyperf.php vendor:publish hyperf/synchronized` 安装配置
+
+```php
+return [
+
+    'redis' => [
+        'store' => \Hyperf\Synchronized\Store\RedisStore::class, // redis 锁
+        'options' => [
+            'pool' => 'default', // redis.php 配置的 pool 配置
+        ],
+    ],
+
+    'consul' => [
+        'store' => \Hyperf\Synchronized\Store\ConsulStore::class, // consul 锁
+        'options' => [
+            'uri' => 'http://127.0.0.1:8500',
+            'token' => ''
+        ],
+    ],
+
+];
+```
+
+
 ## 注解参数
 
 |  配置  |                  默认值                  |         备注          |
 |:------:|:----------------------------------------:|:---------------------:|
 | mode |  1  | 锁模式，1：阻塞，2：异常 |
 | secondsTimeout | 3 |        超时时间，仅`阻塞`模式下有效，单位：秒         |
-| lockPool |        default         |       redis 的`pool`名称       |
+| store |        redis         |        synchronized.php 中的 store 配置    |
 | withParam |        true         |       false：方法锁，true：方法 + 参数锁，由此控制锁的粒度      |
 
 ## 使用
