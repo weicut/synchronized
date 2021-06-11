@@ -15,7 +15,7 @@ namespace Hyperf\Synchronized\Store;
 
 use Hyperf\Synchronized\Contract\StoreInterface;
 
-class EtcdStore implements StoreInterface
+class RedisRedLockStore implements StoreInterface
 {
 
     protected $handler;
@@ -25,7 +25,7 @@ class EtcdStore implements StoreInterface
 
     public function __construct(array $options, int $ttl)
     {
-        $this->ttl = $ttl;
+        $this->ttl     = $ttl;
     }
 
     public function create(string $key): bool

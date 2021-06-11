@@ -17,15 +17,12 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Redis\RedisFactory;
 use Hyperf\Synchronized\Annotation\Synchronized;
 use Hyperf\Synchronized\Contract\StoreInterface;
 use Hyperf\Synchronized\Exception\AcquireException;
 use Hyperf\Synchronized\Lock\LockFactory;
 use Hyperf\Synchronized\LockKey;
 use Hyperf\Synchronized\LockMode;
-use Hyperf\Synchronized\Store\RedisStore;
-use Hyperf\Utils\ApplicationContext;
 
 /**
  * @Aspect
@@ -52,6 +49,10 @@ class SynchronizedAspect extends AbstractAspect
 
         /** @var Synchronized $annotation */
         $annotation = $proceedingJoinPoint->getAnnotationMetadata()->method[Synchronized::class];
+
+        if ($annotation->secondsTimeout <= 0) {
+            throw new \InvalidArgumentException('invalid secondsTimeout.');
+        }
 
         $lockKey = $this->generateKey($proceedingJoinPoint, $annotation);
 

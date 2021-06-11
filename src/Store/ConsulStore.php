@@ -39,9 +39,6 @@ class ConsulStore implements StoreInterface
 
     public function __construct(array $options, int $ttl, StdoutLoggerInterface $logger)
     {
-        if ($ttl <= 0) {
-            throw new \InvalidArgumentException('invalid parameter of ttl.');
-        }
         $this->ttl = $ttl < 10 ? 10 : $ttl;
         [$this->session, $this->kv] = $this->makeClient($options);
 

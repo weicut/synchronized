@@ -28,10 +28,6 @@ class RedisStore implements StoreInterface
 
     public function __construct(array $options, int $ttl)
     {
-        if ($ttl <= 0) {
-            throw new \InvalidArgumentException('invalid parameter of ttl.');
-        }
-
         $this->handler = $this->makeClient($options);
         $this->ttl     = $ttl;
     }
