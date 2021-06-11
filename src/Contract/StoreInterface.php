@@ -18,8 +18,6 @@ interface StoreInterface
 
     public function create(string $key): bool;
 
-    public function exists(string $key): bool;
-
     public function remove(string $key): bool;
 
     public function getTtl(): int;

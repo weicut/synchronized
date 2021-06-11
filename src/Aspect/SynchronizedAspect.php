@@ -19,6 +19,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\RedisFactory;
 use Hyperf\Synchronized\Annotation\Synchronized;
+use Hyperf\Synchronized\Contract\StoreInterface;
 use Hyperf\Synchronized\Exception\AcquireException;
 use Hyperf\Synchronized\Lock\LockFactory;
 use Hyperf\Synchronized\LockKey;
@@ -39,7 +40,7 @@ class SynchronizedAspect extends AbstractAspect
     /**
      * @var StdoutLoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     public function __construct(StdoutLoggerInterface $logger)
     {
@@ -52,10 +53,20 @@ class SynchronizedAspect extends AbstractAspect
         /** @var Synchronized $annotation */
         $annotation = $proceedingJoinPoint->getAnnotationMetadata()->method[Synchronized::class];
 
-        $redis   = ApplicationContext::getContainer()->get(RedisFactory::class)->get($annotation->lockPool);
         $lockKey = $this->generateKey($proceedingJoinPoint, $annotation);
 
-        $store = new RedisStore($redis, $annotation->secondsTimeout);
+        $config = config('synchronized.'.$annotation->store);
+
+        if(empty($config) || empty($config['store'])){
+            throw new \InvalidArgumentException('invalid synchronized config.');
+        }
+
+        /** @var StoreInterface $store */
+        $store = make($config['store'], ['options' => (array)($config['options'] ?? []), 'ttl' => $annotation->secondsTimeout]);
+
+        if(!$store instanceof StoreInterface){
+            throw new \InvalidArgumentException(sprintf('invalid synchronized store instance: %s', $config['store']));
+        }
 
         $lock = LockFactory::createFromStoreAndKey($store, $lockKey);
 

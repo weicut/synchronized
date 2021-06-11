@@ -13,12 +13,9 @@ declare(strict_types=1);
 namespace Hyperf\Synchronized\Store;
 
 
-use Hyperf\Redis\RedisFactory;
-use Hyperf\Redis\RedisProxy;
 use Hyperf\Synchronized\Contract\StoreInterface;
-use Hyperf\Utils\ApplicationContext;
 
-class RedisStore implements StoreInterface
+class EtcdStore implements StoreInterface
 {
 
     protected $handler;
@@ -26,35 +23,21 @@ class RedisStore implements StoreInterface
     protected $ttl;
 
 
-    public function __construct(array $options, int $ttl)
+    public function __construct(array $options = [],int $ttl = 300)
     {
         if ($ttl <= 0) {
             throw new \InvalidArgumentException('invalid parameter of ttl.');
         }
-
-        $this->handler = $this->makeClient($options);
         $this->ttl     = $ttl;
-    }
-
-    private function makeClient(array $options):RedisProxy
-    {
-        $pool = $options['pool'] ?? 'default';
-        return ApplicationContext::getContainer()->get(RedisFactory::class)->get($pool);
     }
 
     public function create(string $key): bool
     {
-        $status = $this->handler->set(
-            $key,
-            1,
-            ['NX', 'EX' => $this->ttl]);
-
-        return (bool) $status;
+       return true;
     }
 
     public function remove(string $key): bool
     {
-        $this->handler->del($key);
         return true;
     }
 

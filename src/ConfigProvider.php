@@ -24,6 +24,14 @@ class ConfigProvider
                     ],
                 ],
             ],
+            'publish' => [
+                [
+                    'id' => 'config',
+                    'description' => 'The config for synchronized.',
+                    'source' => __DIR__ . '/../publish/synchronized.php',
+                    'destination' => BASE_PATH . '/config/autoload/synchronized.php',
+                ],
+            ],
         ];
     }
 }

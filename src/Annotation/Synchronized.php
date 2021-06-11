@@ -41,7 +41,7 @@ class Synchronized extends AbstractAnnotation
     /**
      * @var string
      */
-    public $lockPool = 'default';
+    public $store = 'redis';
 
 
     public function __construct($value = null)
@@ -50,7 +50,7 @@ class Synchronized extends AbstractAnnotation
         $this->mode           = (int) $this->mode;
         $this->secondsTimeout = (int) $this->secondsTimeout;
         $this->withParam      = (boolean) $this->withParam;
-        $this->lockPool      = (string) $this->lockPool;
+        $this->store      = (string) $this->store;
     }
 
 }
